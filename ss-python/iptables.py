@@ -16,6 +16,7 @@ class Iptables(object):
         self._add_all_rules(ports)
 
     def add_rule(self, port):
+        port = str(port)
         cmds = [
                 'iptables -A ' + self.SSINPUT + ' -p tcp --dport ' + port + ' -j ACCEPT',
                 'iptables -A ' + self.SSINPUT + ' -p udp --dport ' + port + ' -j ACCEPT',
