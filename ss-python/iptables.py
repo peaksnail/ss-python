@@ -60,11 +60,23 @@ class Iptables(object):
         for port in ports:
             self.add_rule(port);
 
-    def count(self, port):
+    def count(self):
         'count the flow of port'
-        cmd = 'iptables -nvx -L ' + self.SSINPUT
-        pass
+
+        usage = {}
+        cmd = 'iptables -nvx -L ' + self.SSINPUT + ' && iptables -nvx -L ' + self.SSOUTPUT
+        exec = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        output = exec.stdout.readlines()
+        for line in output:
+            line = line.decode('ascii').split(' ')
+            if len(line) > 5 and len(line[-1]) > 1:
+                port = line[-1].split(':')[1]
+                if port in usage:
+                    usage[port] = usage[port] + int(line[8])
+                else:
+                    usage[port] = int(line[8])
+        return usage
 
 
 if __name__ == '__main__':
-    iptables = Iptables([1,2,3])
+    iptables = Iptables([13152])
