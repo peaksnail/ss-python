@@ -1,0 +1,14 @@
+{
+    "server":"0.0.0.0",
+	"port_password": {
+		"1232":"ad",
+		"231":"23"
+	
+	},
+    "local_address":"127.0.0.1",
+    "local_port":1080,
+    "password":"aws90&",
+    "timeout":300,
+    "method":"aes-256-cfb",
+    "fast_open":false
+}
