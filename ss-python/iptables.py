@@ -6,10 +6,13 @@
 __author__ = 'zengshaojian'
 
 import subprocess
+import threading
+import time
 
 class Iptables(object):
 
     def __init__(self, ports = []):
+        # (self, conf) read port from conf
         self.SSINPUT = 'ssinput'
         self.SSOUTPUT = 'ssoutput'
         self._rule_init()
@@ -60,7 +63,7 @@ class Iptables(object):
         for port in ports:
             self.add_rule(port);
 
-    def count(self):
+    def _count(self):
         'count the flow of port'
 
         usage = {}
@@ -70,12 +73,31 @@ class Iptables(object):
         for line in output:
             line = line.decode('ascii').split(' ')
             if len(line) > 5 and len(line[-1]) > 1:
-                port = line[-1].split(':')[1]
+                # delete all space after split
+                line = [item for item in filter(None, line)]
+                port = line[-1].split(':')[1].strip('\n')
                 if port in usage:
-                    usage[port] = usage[port] + int(line[8])
+                    usage[port] = usage[port] + int(line[1])
                 else:
-                    usage[port] = int(line[8])
+                    usage[port] = int(line[1])
         return usage
+
+    def _task(self, retention, file):
+        while True:
+            usage = self.count()
+            print(usage)
+            self._storage(file, storage)
+            time.sleep(retention)
+
+    def _storage(self, file, storage):
+        pass
+
+
+    def count_task_start(self, retention, file):
+        #new thread to count and storage
+        t = threading.Thread(target = self._task, args = ( retention, file))
+        t.start()
+        t.join()
 
 
 if __name__ == '__main__':
