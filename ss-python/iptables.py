@@ -8,6 +8,8 @@ __author__ = 'zengshaojian'
 import subprocess
 import threading
 import time
+import utils
+import os
 
 class Iptables(object):
 
@@ -85,15 +87,16 @@ class Iptables(object):
     def _task(self, retention, file):
         while True:
             usage = self.count()
-            print(usage)
-            self._storage(file, storage)
+            self._storage(file, usage)
             time.sleep(retention)
 
-    def _storage(self, file, storage):
-        pass
+    def _storage(self, file, usage):
+        with open(file, 'w') as f:
+            for item in usage.items():
+                f.write(item[0] + ': ' + item[1] + '\n')
 
 
-    def count_task_start(self, retention, file):
+    def count_task_start(self, retention = 5, file = utils.get_default_usage_file()):
         #new thread to count and storage
         t = threading.Thread(target = self._task, args = ( retention, file))
         t.start()

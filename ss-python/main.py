@@ -12,8 +12,8 @@ if __name__ == '__main__':
 
     conf = utils.load_file(PROJECT_DIR + '/docs/ss-python.conf')
 
-    user = users.Users(conf['ss-conf'])
+    user = users.Users(conf['ss_conf'])
     iptable = iptables.Iptables(user.get())
-    iptable.count_task_start('storage file')
+    iptable.count_task_start(int(conf['track_retention']), conf['usage_file'])
 
 

@@ -13,10 +13,10 @@ class Users(object):
     def __init__(self, file):
         self._user_list = []
         self._user_usage = {}
-        self._conf = file
+        self._load(file)
 
-    def _load(self):
-        with open(self._conf, 'r') as json_content:
+    def _load(self, file):
+        with open(file, 'r') as json_content:
             conf = json.load(json_content)
 
         if 'server_port' in conf:
