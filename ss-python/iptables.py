@@ -13,12 +13,19 @@ import os
 
 class Iptables(object):
 
-    def __init__(self, ports = []):
+    def __init__(self, ports = [], file = utils.get_default_usage_file()):
         # (self, conf) read port from conf
+
         self.SSINPUT = 'ssinput'
         self.SSOUTPUT = 'ssoutput'
-        self._rule_init()
-        self._add_all_rules(ports)
+        self._usage_file = file
+
+        if os.path.isfile(file):
+            self._usage = utils.load_file(file)
+        else:
+            self._usage = {}
+            self._rule_init()
+            self._add_all_rules(ports)
 
     def add_rule(self, port):
         port = str(port)
@@ -68,7 +75,6 @@ class Iptables(object):
     def _count(self):
         'count the flow of port'
 
-        usage = {}
         cmd = 'iptables -nvx -L ' + self.SSINPUT + ' && iptables -nvx -L ' + self.SSOUTPUT
         exec = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         output = exec.stdout.readlines()
@@ -78,29 +84,33 @@ class Iptables(object):
                 # delete all space after split
                 line = [item for item in filter(None, line)]
                 port = line[-1].split(':')[1].strip('\n')
-                if port in usage:
-                    usage[port] = usage[port] + int(line[1])
+                if port in self._usage:
+                    self._usage[port] = self._usage[port] + int(line[1])
                 else:
-                    usage[port] = int(line[1])
-        return usage
+                    self._usage[port] = int(line[1])
 
     def _task(self, retention, file):
         while True:
-            usage = self.count()
-            self._storage(file, usage)
+            self._count()
+            self._storage(file)
             time.sleep(retention)
 
-    def _storage(self, file, usage):
+    def _storage(self, file):
         with open(file, 'w') as f:
-            for item in usage.items():
-                f.write(item[0] + ': ' + item[1] + '\n')
+            for item in self._usage.items():
+                f.write(item[0] + ': ' + str(item[1]) + '\n')
 
 
-    def count_task_start(self, retention = 5, file = utils.get_default_usage_file()):
+    def count_task_start(self, retention = 5):
         #new thread to count and storage
-        t = threading.Thread(target = self._task, args = ( retention, file))
+        t = threading.Thread(target = self._task, args = ( retention, self._usage_file))
         t.start()
         t.join()
+
+    def delete(self):
+        self._delete_all_rules()
+        #todo 
+        #delete usage file
 
 
 if __name__ == '__main__':

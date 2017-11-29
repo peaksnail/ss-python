@@ -14,6 +14,6 @@ if __name__ == '__main__':
 
     user = users.Users(conf['ss_conf'])
     iptable = iptables.Iptables(user.get())
-    iptable.count_task_start(int(conf['track_retention']), conf['usage_file'])
+    iptable.count_task_start()
 
 
