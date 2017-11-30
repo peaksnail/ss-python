@@ -109,8 +109,7 @@ class Iptables(object):
 
     def delete(self):
         self._delete_all_rules()
-        #todo 
-        #delete usage file
+        os.remove(self._usage_file)
 
 
 if __name__ == '__main__':

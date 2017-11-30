@@ -28,3 +28,11 @@ def get_project_docs_dir():
 
 def get_default_usage_file():
     return get_project_dir() + os.path.sep + 'docs' + os.path.sep + 'usage.txt'
+
+def get_default_pid_file():
+    return get_project_dir() + os.path.sep + 'docs' + os.path.sep + 'pid'
+
+
+def record_pid(file, pid):
+    with openen(file, 'w') as f:
+        f.write(pid)
