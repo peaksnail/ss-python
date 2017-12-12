@@ -2,6 +2,8 @@
 
 # -*- coding: utf-8 -*-
 
+__author__ = 'psnail'
+
 import utils
 import iptables
 import users

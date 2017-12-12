@@ -3,7 +3,7 @@
 
 ' user info'
 
-__author__ = 'zengshaojian'
+__author__ = 'psnail'
 
 
 import json

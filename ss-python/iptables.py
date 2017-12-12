@@ -3,7 +3,7 @@
 
 ' iptables tools '
 
-__author__ = 'zengshaojian'
+__author__ = 'psnail'
 
 import subprocess
 import threading

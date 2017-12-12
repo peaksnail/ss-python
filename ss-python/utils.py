@@ -2,6 +2,8 @@
 
 # -*- coding: utf-8 -*-
 
+__author__ = 'psnail'
+
 import os
 
 def load_file(file):
@@ -17,6 +19,10 @@ def load_file(file):
 
     return content
 
+
+def clear_file(file):
+    with open(file, 'w') as f:
+        pass
 
 def get_project_dir():
     cwd = os.getcwd()
