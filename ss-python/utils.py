@@ -40,5 +40,24 @@ def get_default_pid_file():
 
 
 def record_pid(file, pid):
-    with openen(file, 'w') as f:
+    with open(file, 'w') as f:
         f.write(pid)
+
+def get_pid(file):
+    with open(file) as f:
+        return f.read(pid)
+
+def byte_readable(data, unit='B'):
+    '''
+    make byte_readable
+    data original is bytes
+    '''
+    if unit == 'B':
+        return data
+    elif unit == 'K':
+        return data/1024
+    elif unit == 'M':
+        return data/1024/1024
+    elif unit == 'G':
+        return data/1024/1024/1024
+    
