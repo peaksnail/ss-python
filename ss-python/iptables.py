@@ -84,10 +84,7 @@ class Iptables(object):
                 # delete all space after split
                 line = [item for item in filter(None, line)]
                 port = line[-1].split(':')[1].strip('\n')
-                if port in self._usage:
-                    self._usage[port] = self._usage[port] + int(line[1])
-                else:
-                    self._usage[port] = int(line[1])
+                self._usage[port] = line[1]
 
     def _task(self, retention, file):
         while True:
