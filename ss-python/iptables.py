@@ -43,6 +43,40 @@ class Iptables(object):
             else:
                 print('exec failed, cmd: ' + cmd + ', ' + str(output))
 
+    def delete_rule(self, port):
+        port = str(port)
+        cmds = [
+                'iptables -D ' + self.SSINPUT + ' -p tcp --dport ' + port + ' -j ACCEPT',
+                'iptables -D ' + self.SSINPUT + ' -p udp --dport ' + port + ' -j ACCEPT',
+                'iptables -D ' + self.SSOUTPUT + ' -p tcp --sport ' + port + ' -j ACCEPT',
+                'iptables -D ' + self.SSOUTPUT + ' -p udp --sport ' + port + ' -j ACCEPT'
+                ]
+        for cmd in cmds:
+            exec = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            output = exec.stdout.readlines()
+            if len(output) == 0:
+                print('exec success, cmd: ' + cmd)
+            else:
+                print('exec failed, cmd: ' + cmd + ', ' + str(output))
+
+    def clean_counter(self, port):
+        if port == None:
+            #clean all counter
+            cmds = [
+                    'iptables -Z ' + self.SSINPUT,
+                    'iptables -Z ' + self.SSOUTPUT
+                    ]
+            for cmd in cmds:
+                exec = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                output = exec.stdout.readlines()
+                if len(output) == 0:
+                    print('clean cll ounter success')
+                else:
+                    print('clean all counter failed: ' + str(output))
+        else:
+            self.delete_rule(port)
+            self.add_rule(port)
+
     def _rule_init(self):
         self._delete_all_rules();
         cmds = [

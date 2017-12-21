@@ -15,7 +15,10 @@ def load_file(file):
             if line.startswith('#'):
                 continue
             line = line.split(':')
-            content[line[0].strip()] = line[1].strip()
+            if line[1].strip() == '':
+                content[line[0].strip()] = None
+            else:
+                content[line[0].strip()] = line[1].strip()
 
     return content
 
