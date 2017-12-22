@@ -16,25 +16,28 @@ import getopt
 import time
 import utils
 import iptables
+import conf
 
 
 class Admin(object):
 
     def __init__(self):
-        self.usage = utils.load_file(utils.get_default_usage_file())
+        self.config = conf.Conf()
+        self.usage_file = config.get('usage_file', utils.get_default_usage_file())
+        self.usage = utils.load_file(self.usage_file)
 
-    def show_all(self, unit='B'):
+    def show_all(self, unit = 'B'):
         for user in self.usage:
             print ('port %s, usage: %s' % (user, utils.byte_readable(int(self.usage[user]), unit)))
 
-    def show_user(self, user, unit='B'):
+    def show_user(self, user, unit = 'B'):
         if(user in self.usage):
             print ('port %s, usage: %s' % (user, utils.byte_readable(int(self.usage[user]), unit)))
         else:
             print('not found port %s' % user)
 
     def clear_counter(self, user):
-        iptable = iptables.Iptables([])
+        iptable = iptables.Iptables([], self.usage_file)
         iptable.clean_counter(user)
 
     def shutdown_ss(self):
@@ -47,9 +50,9 @@ class Admin(object):
         pass
 
     def shutdown_self(self):
-        pid = utils.get_pid(utils.get_default_pid_file())
+        pid = utils.get_pid(config.get('pid_file', utils.get_default_pid_file()))
         cmd = 'kill -9 ' + pid
-        exec = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        exec = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
         output = exec.stdout.readlines()
         print(output)
 

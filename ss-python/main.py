@@ -4,22 +4,21 @@
 
 __author__ = 'psnail'
 
+import conf
 import utils
 import iptables
 import users
 import os
 
-PROJECT_DIR = utils.get_project_dir()
 
 if __name__ == '__main__':
 
+    config = conf.Conf()
 
-    utils.record_pid(utils.get_default_pid_file(), str(os.getpid()))
+    utils.record_pid(config.get('pid_file', utils.get_default_pid_file()), str(os.getpid()))
 
-    conf = utils.load_file(PROJECT_DIR + '/docs/ss-python.conf')
-
-    user = users.Users(conf['ss_conf'])
-    iptable = iptables.Iptables(user.get())
-    iptable.count_task_start()
+    user = users.Users(config.get('ss_conf', '/etc/shadowsocks.json'))
+    iptable = iptables.Iptables(user.get(), config.get('usage_file', utils.get_default_usage_file())
+    iptable.count_task_start(config.get('flush_retention', 5))
 
 

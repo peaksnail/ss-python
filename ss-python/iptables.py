@@ -13,7 +13,7 @@ import os
 
 class Iptables(object):
 
-    def __init__(self, ports = [], file = utils.get_default_usage_file()):
+    def __init__(self, ports = [], file):
         # (self, conf) read port from conf
 
         self.SSINPUT = 'ssinput'
@@ -36,7 +36,7 @@ class Iptables(object):
                 'iptables -A ' + self.SSOUTPUT + ' -p udp --sport ' + port + ' -j ACCEPT'
                 ]
         for cmd in cmds:
-            exec = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            exec = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
             output = exec.stdout.readlines()
             if len(output) == 0:
                 print('exec success, cmd: ' + cmd)
@@ -52,7 +52,7 @@ class Iptables(object):
                 'iptables -D ' + self.SSOUTPUT + ' -p udp --sport ' + port + ' -j ACCEPT'
                 ]
         for cmd in cmds:
-            exec = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            exec = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
             output = exec.stdout.readlines()
             if len(output) == 0:
                 print('exec success, cmd: ' + cmd)
@@ -67,7 +67,7 @@ class Iptables(object):
                     'iptables -Z ' + self.SSOUTPUT
                     ]
             for cmd in cmds:
-                exec = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                exec = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
                 output = exec.stdout.readlines()
                 if len(output) == 0:
                     print('clean cll ounter success')
@@ -110,7 +110,7 @@ class Iptables(object):
         'count the flow of port'
 
         cmd = 'iptables -nvx -L ' + self.SSINPUT + ' && iptables -nvx -L ' + self.SSOUTPUT
-        exec = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        exec = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
         output = exec.stdout.readlines()
         for line in output:
             line = line.decode('ascii').split(' ')
@@ -132,7 +132,7 @@ class Iptables(object):
                 f.write(item[0] + ': ' + str(item[1]) + '\n')
 
 
-    def count_task_start(self, retention = 5):
+    def count_task_start(self, retention):
         #new thread to count and storage
         t = threading.Thread(target = self._task, args = ( retention, self._usage_file))
         t.start()

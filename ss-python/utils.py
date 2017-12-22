@@ -28,9 +28,7 @@ def clear_file(file):
         pass
 
 def get_project_dir():
-    cwd = os.getcwd()
-    sep = os.path.sep
-    return cwd[0: cwd.rfind(sep)]
+    return os.path.split(os.path.split(os.path.realpath(__file__))[0])[0]
 
 def get_project_docs_dir():
     return get_project_dir() + os.path.sep + 'docs'
