@@ -36,7 +36,7 @@ class Admin(object):
         else:
             print('not found port %s' % user)
 
-    def clear_counter(self, user):
+    def clean_counter(self, user):
         iptable = iptables.Iptables([], self.usage_file)
         iptable.clean_counter(user)
 
@@ -94,9 +94,9 @@ if __name__ == '__main__':
             admin.restore()
         elif opt_name in ('-c', '--clean'):
             if opt_value == 'all':
-                admin.clear_user()
+                admin.clean_counter()
             else:
-                admin.clear_user(opt_value)
+                admin.clean_counter(opt_value)
 
 
 
