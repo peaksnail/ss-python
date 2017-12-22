@@ -23,7 +23,7 @@ class Admin(object):
 
     def __init__(self):
         self.config = conf.Conf()
-        self.usage_file = config.get('usage_file', utils.get_default_usage_file())
+        self.usage_file = self.config.get('usage_file', utils.get_default_usage_file())
         self.usage = utils.load_file(self.usage_file)
 
     def show_all(self, unit = 'B'):

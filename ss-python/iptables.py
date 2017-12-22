@@ -13,7 +13,7 @@ import os
 
 class Iptables(object):
 
-    def __init__(self, ports = [], file):
+    def __init__(self, ports, file):
         # (self, conf) read port from conf
 
         self.SSINPUT = 'ssinput'
