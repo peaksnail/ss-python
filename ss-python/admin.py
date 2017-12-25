@@ -50,7 +50,7 @@ class Admin(object):
         pass
 
     def shutdown_self(self):
-        pid = utils.get_pid(config.get('pid_file', utils.get_default_pid_file()))
+        pid = utils.get_pid(self.config.get('pid_file', utils.get_default_pid_file()))
         cmd = 'kill -9 ' + pid
         exec = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
         output = exec.stdout.readlines()
