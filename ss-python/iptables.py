@@ -109,6 +109,7 @@ class Iptables(object):
     def _count(self):
         'count the flow of port'
 
+        self._usage = {}
         cmd = 'iptables -nvx -L ' + self.SSINPUT + ' && iptables -nvx -L ' + self.SSOUTPUT
         exec = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
         output = exec.stdout.readlines()
@@ -118,7 +119,10 @@ class Iptables(object):
                 # delete all space after split
                 line = [item for item in filter(None, line)]
                 port = line[-1].split(':')[1].strip('\n')
-                self._usage[port] = line[1]
+                if port in self._usage:
+                    self._usage[port] = self._usage[port] + int(line[1])
+                else:
+                    self._usage[port] = int(line[1])
 
     def _task(self, retention, file):
         while True:
