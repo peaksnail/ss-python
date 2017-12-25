@@ -46,7 +46,7 @@ def record_pid(file, pid):
 
 def get_pid(file):
     with open(file) as f:
-        return f.read(pid)
+        return f.read()
 
 def byte_readable(data, unit='B'):
     '''
