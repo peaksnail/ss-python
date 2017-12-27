@@ -41,20 +41,38 @@ class Admin(object):
         iptable.clean_counter(user)
 
     def shutdown_ss(self):
-        pass
+        #todo
+        ss_cmd = self.config.get('ss_cmd', 'ssserver')
+        get_ss_argv_cmd = 'ps aux | grep ' + ss_cmd + 'grep -v ' + ss_cmd + ' | awk'
+        ss_argv = subprocess.Popen(get_ss_argv_cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT).stdout.readlines()
 
-    def restart_ss(self):
+    def start_ss(self):
         pass
 
     def reload_ss(self):
         pass
 
     def shutdown_self(self):
-        pid = utils.get_pid(self.config.get('pid_file', utils.get_default_pid_file()))
+        pid_file = self.config.get('pid_file', utils.get_default_pid_file())
+        if not os.path.exists(pid_file):
+            print('ss-python has not started')
+            return
+        pid = utils.get_pid(pid_file)
         cmd = 'kill -9 ' + pid
-        exec = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
-        output = exec.stdout.readlines()
-        print(output)
+        subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
+        #rm pid file
+        os.remove(pid_file)
+
+    def start_self(self):
+        pid_file = self.config.get('pid_file', utils.get_default_pid_file())
+        if os.path.exists(pid_file):
+            print('ss-python has started...')
+        else:
+            project_dir = utils.get_project_dir()
+            sh = os.path.sep.join([project_dir, 'bin', 'ss-python.sh'])
+            cmd = 'sh ' + sh
+            exe = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
+            print(exe.stdout.readlines())
 
     def restore(self):
         '''
@@ -69,7 +87,7 @@ if __name__ == '__main__':
 
     admin = Admin()
 
-    opts, args = getopt.getopt(sys.argv[1:], '-s:-h-v-q-r-c:', ['show=', 'help', 'version', 'quit', 'restore', 'clean='])
+    opts, args = getopt.getopt(sys.argv[1:], '-s-g:-h-v-q-r-c:', ['start', 'get=', 'help', 'version', 'quit', 'restore', 'clean='])
     for opt_name, opt_value in opts:
         #todo rich the help docs
         if opt_name in ('-h', '--help'):
@@ -80,7 +98,7 @@ if __name__ == '__main__':
             print(help)
         elif opt_name in ('-v', '--version'):
             print('version: 0.0.1')
-        elif opt_name in ('-s', '--show'):
+        elif opt_name in ('-g', '--get'):
             unit = 'B'
             if len(args)> 0:
                 unit = args[0]
@@ -97,6 +115,8 @@ if __name__ == '__main__':
                 admin.clean_counter()
             else:
                 admin.clean_counter(opt_value)
+        elif opt_name in ('-s', '--start'):
+            admin.start_self()
 
 
 

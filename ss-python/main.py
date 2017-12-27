@@ -18,7 +18,7 @@ if __name__ == '__main__':
     utils.record_pid(config.get('pid_file', utils.get_default_pid_file()), str(os.getpid()))
 
     user = users.Users(config.get('ss_conf', '/etc/shadowsocks.json'))
-    iptable = iptables.Iptables(user.get(), config.get('usage_file', utils.get_default_usage_file())
-    iptable.count_task_start(config.get('flush_retention', 5))
+    iptable = iptables.Iptables(user.get(), config.get('usage_file', utils.get_default_usage_file()))
+    iptable.count_task_start(int(config.get('flush_retention', 5)))
 
 
